@@ -70,8 +70,7 @@ BookingSchema.pre('save', async function (next) {
 // Create index on eventId for faster queries and lookups
 BookingSchema.index({ eventId: 1 });
 
-// Optional: Create compound index for unique bookings per event per email
-// Uncomment if you want to prevent duplicate bookings
+// Enforce unique bookings per event per email — prevents duplicate bookings
 BookingSchema.index({ eventId: 1, email: 1 }, { unique: true });
 
 /**
