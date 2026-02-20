@@ -58,8 +58,11 @@ export async function GET(
         message: 'Event fetched successfully',
         event,
       },
-      { status: 200 }
+      { status: 200 },
+
     );
+
+    
   } catch (error) {
     // Log error for debugging
     console.error('Error fetching event by slug:', error);

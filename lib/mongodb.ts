@@ -64,7 +64,8 @@ async function connectDB(): Promise<typeof mongoose> {
       bufferCommands: false, // Disable Mongoose buffering
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    // Using non-null assertion since MONGODB_URI is validated above
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       console.log('✅ MongoDB connected successfully');
       return mongoose;
     });

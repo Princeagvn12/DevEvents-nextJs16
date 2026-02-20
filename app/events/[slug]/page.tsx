@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import BookEvent from "@/components/BookEvent";
+import { IEvent } from "@/database";
+import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import EventCard from "@/components/EventCard";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const bookings = 10;
@@ -9,7 +12,7 @@ const EventAgenda = ({ agendaItems }: { agendaItems: string[] }) => {
     <div className="agenda">
       <h2>Agenda</h2>
       <ul>
-        {agendaItems?.map((item) => (
+        {JSON.parse(agendaItems[0])?.map((item: string) => (
           <li key={item}>{item}</li>
         ))}
       </ul>
@@ -39,6 +42,8 @@ const EventDetailsPage = async ({
       organizer,
     },
   } = await res.json();
+  
+  const similarEvents : IEvent[] = await getSimilarEventsBySlug(slug);
 
   if (!description) return notFound();
   return (
@@ -104,7 +109,7 @@ const EventDetailsPage = async ({
               <p>Audience: {audience}</p>
             </div>
           </section>
-          <EventAgenda agendaItems={JSON.parse(agenda[0])} />
+          <EventAgenda agendaItems={agenda} />
           <section className="flex-col-gap-2">
             {/* About the organizer */}
             <h2>About the organizer</h2>
@@ -113,7 +118,7 @@ const EventDetailsPage = async ({
           <section className="flex-col-gap-2">
             <h2>Tags</h2>
             <div className="flex flex-row flex-wrap gap-2">
-              {JSON.parse(tags[0])?.map((tag: string) => (
+              {JSON.parse(tags)?.map((tag: string) => (
                 // Rendering tags in small nice looking cubes
                 <div key={tag} className="pill">
                   {tag}
@@ -132,6 +137,19 @@ const EventDetailsPage = async ({
             <BookEvent />
           </div>
         </aside>
+      </div>
+
+      <div className="flex w-full flex-col gap-4 pt-20">
+        <h2>Similar Events</h2>
+        <div className="events">
+          {similarEvents.length > 0 ? (
+            similarEvents.map((similarEvent: IEvent) => (
+              <EventCard key={similarEvent.title} {...similarEvent} />
+            ))
+          ) : (
+            <p>No similar events found.</p>
+          )}
+        </div>
       </div>
     </section>
   );
