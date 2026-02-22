@@ -1,9 +1,14 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
 import { IEvent } from "@/database/event.model";
+import { cacheLife } from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const page = async () => {
+  "use cache";
+  cacheLife("hours");
+  // cached the data for 1 hour to reduce the number of API calls and improve performance
+  // since the events data is not expected to change frequently, this caching strategy is suitable for our use case. It will help to reduce the load on the server and provide a faster response time for users.
   const res = await fetch(`${BASE_URL}/api/events`);
   const {events} = await res.json();
   return (
