@@ -57,7 +57,9 @@ export async function GET(req: NextRequest){
     try 
     {
         await connectDB();
-        const events = await Event.find().sort({createdAt: -1});
+        const events = await Event.find().sort({createdAt: -1});console.log("events fetched successfully");
+        
+        
         return NextResponse.json({message:'Events fetched successfully', events}, {status:200})
         
     } catch (error) {

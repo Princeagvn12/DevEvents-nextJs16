@@ -1,6 +1,8 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { Event, IEvent } from '@/database';
+
 
 /**
  * GET /api/events/[slug]
@@ -53,6 +55,8 @@ export async function GET(
     }
 
     // Return event data
+    console.log("Event fetch successfully");
+    
     return NextResponse.json(
       {
         message: 'Event fetched successfully',
