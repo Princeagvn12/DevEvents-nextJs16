@@ -1,33 +1,40 @@
-"use cache";
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
-import { IEvent } from "@/database/event.model";
+import { getAllEvents } from "@/lib/actions/event.actions";
 import { Suspense } from "react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-const page = async () => {
+const EventsList = async () => {
+  const events = await getAllEvents();
 
-  const res = await fetch(`${BASE_URL}/api/events`);
-  const {events} = await res.json();
+  if (!events.length) {
+    return <p>No events found.</p>;
+  }
+
   return (
-    <Suspense fallback={<div className="text-center">Loading data for you...</div>}>
-      <section>
-        <h1 className="text-center">
-          The Hub for Every Dev Event You Mustn't Miss
-        </h1>
-        <p className="mt-5 text-center">Hackatons, Meetups, Conferences, All In One Place</p>
-        <ExploreBtn />
-        <div className="mt-20 space-y-7">
-          <h3>Featured Events</h3>
-          <ul className="events">
-            {events && events.length > 0 && events.map((event: IEvent)=>(
-                <li key={event.slug}><EventCard {...event}/></li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    </Suspense>
+    <ul className="events">
+      {events.map((event: any) => (
+        <li key={event.slug}>
+          <EventCard {...event} />
+        </li>
+      ))}
+    </ul>
   );
 };
 
-export default page;
+const Page = () => {
+  return (
+    <section>
+      <h1 className="text-center">The Hub for Every Dev Event You Mustn't Miss</h1>
+      <p className="mt-5 text-center">Hackatons, Meetups, Conferences, All In One Place</p>
+      <ExploreBtn />
+      <div className="mt-20 space-y-7">
+        <h3>Featured Events</h3>
+        <Suspense fallback={<div className="text-center">Loading data for you...</div>}>
+          <EventsList />
+        </Suspense>
+      </div>
+    </section>
+  );
+};
+
+export default Page;
